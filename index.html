@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoApp1</title>
+    <title>Top Ten Most Improved Cities</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <style>
@@ -54,11 +54,15 @@
         tap: true
     });
 
+//adding data from Geoserver
+    // var wmsLayer = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
+    //         layers: "FirstWorkspace:Most Improved Cities"
+    //     });
+    //     wmsLayer.addTo(map);
+//adding flat file data
+    var RichmondBG = new L.geoJson.ajax("/data/CN_TT.geojson");
+        RichmondBG.addTo(map);
 
-    var wmsLayer = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
-            layers: "FirstWorkspace:Most Improved Cities"
-        });
-        wmsLayer.addTo(map);
 
 
     //adding osm layer

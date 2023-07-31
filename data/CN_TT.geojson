@@ -1,0 +1,17 @@
+{
+"type": "FeatureCollection",
+"name": "CN_TTGeoj",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 10, "CityName": "New York City", "Transit": 0.8, "Bike": 0.6, "Walk": -0.2 }, "geometry": { "type": "Point", "coordinates": [ -74.009899354049239, 40.710461035205959 ] } },
+{ "type": "Feature", "properties": { "id": 9, "CityName": "Salt Lake City", "Transit": 1.6, "Bike": 0.3, "Walk": -0.4 }, "geometry": { "type": "Point", "coordinates": [ -111.89074168305757, 40.760912224818092 ] } },
+{ "type": "Feature", "properties": { "id": 8, "CityName": "Boston", "Transit": 0.4, "Bike": 0.2, "Walk": 0.9 }, "geometry": { "type": "Point", "coordinates": [ -71.056712855499455, 42.359570404907146 ] } },
+{ "type": "Feature", "properties": { "id": 7, "CityName": "Portland", "Transit": 0.9, "Bike": 0.6, "Walk": 0.4 }, "geometry": { "type": "Point", "coordinates": [ -122.649846808726409, 45.515992408746932 ] } },
+{ "type": "Feature", "properties": { "id": 6, "CityName": "Jersey City", "Transit": 2.6, "Bike": 0.2, "Walk": -0.7 }, "geometry": { "type": "Point", "coordinates": [ -74.068851680236349, 40.71882326432155 ] } },
+{ "type": "Feature", "properties": { "id": 5, "CityName": "Fremont", "Transit": 2.8, "Bike": 0.0, "Walk": 0.1 }, "geometry": { "type": "Point", "coordinates": [ -121.975812247950088, 37.550510781872738 ] } },
+{ "type": "Feature", "properties": { "id": 4, "CityName": "Chicago", "Transit": 1.6, "Bike": 0.6, "Walk": 0.7 }, "geometry": { "type": "Point", "coordinates": [ -87.626330939864218, 41.8753112165072 ] } },
+{ "type": "Feature", "properties": { "id": 3, "CityName": "San Francisco", "Transit": 2.2, "Bike": 1.0, "Walk": 2.0 }, "geometry": { "type": "Point", "coordinates": [ -122.442449288654075, 37.766921659780898 ] } },
+{ "type": "Feature", "properties": { "id": 2, "CityName": "Oakland", "Transit": 6.8, "Bike": 0.8, "Walk": -0.7 }, "geometry": { "type": "Point", "coordinates": [ -122.296009571229305, 37.81055249308794 ] } },
+{ "type": "Feature", "properties": { "id": 1, "CityName": "Seattle", "Transit": 3.8, "Bike": 0.7, "Walk": 2.6 }, "geometry": { "type": "Point", "coordinates": [ -122.320151687844273, 47.591387938216755 ] } }
+]
+}
