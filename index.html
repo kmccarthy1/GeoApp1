@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Ten Most Improved Cities</title>
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <link rel="stylesheet" href="/sidebar/L.Control.Sidebar.css" />
+
     <style>
         body {
                 margin: 0;
@@ -29,6 +30,14 @@
 <body>
 <div class="custom-popup" id="map"></div>
     <div class="leaflet-control coordinate" ></div>
+    <div id="sidebar">
+        <h1>Alt-Transportation Most Improved Cities</h1>
+        <h2>A map of the US Top Ten Cities where ridership has grown the most in public transit, walking, and biking</h2>
+        <div>
+            <img style="display: flex; justify-content: center;" src="/data/CN_pic.jpeg" alt="City Nerd Youtube Profile Photo" href="https://www.youtube.com/@CityNerd/videos">
+        </div>
+        <p>https://youtu.be/-Mh1UctlSOg</p>
+    </div>
 </body>
 
 
@@ -38,6 +47,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/L.Geoserver.js"></script>
+<script src="/sidebar/L.Control.Sidebar.js" ></script>
+
 
 <script>
     //map initialization
@@ -53,16 +64,50 @@
         keyboard: true,
         tap: true
     });
-
+//creating custom popups
+    function customPopup(feature){
+       return `<div> <h2 class="popupTitle"></b>${feature.properties.CityName}</h2> 
+                <p class="popupType"><b>Net Transit Change: </b>${feature.properties.Transit}</p>
+                <p class="popupSubType"><b>Net Walking Change: </b>${feature.properties.Walk}</p>
+                <p class="popupSubType"><b>New Biking Change: </b>${feature.properties.Bike}</p>
+               </div>`;
+    }
+//defining custom style for point data
+    var NewPointStyle = {
+    radius: 10,
+    fillColor: "#03d3fc",
+    color: "#000000",
+    weight: 0.5,
+    opacity: 1,
+    fillOpacity: 0.8
+};
+//creating initial sidebar
+var sidebar = L.control.sidebar('sidebar', {
+    closeButton: false,
+    position: 'left',
+    autoPan: true
+});
+map.addControl(sidebar);
+sidebar.show();
+var visible = sidebar.isVisible();
 //adding data from Geoserver
     // var wmsLayer = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
     //         layers: "FirstWorkspace:Most Improved Cities"
     //     });
     //     wmsLayer.addTo(map);
 //adding flat file data
-    var RichmondBG = new L.geoJson.ajax("/data/CN_TT.geojson");
-        RichmondBG.addTo(map);
+// var TopTenCities = new L.geoJson.ajax("/data/CN_TT.geojson");
+        // TopTenCities.addTo(map);
 
+//adding city data from geojson and adding custom style
+    var TopTenCities = new L.geoJson.ajax("/data/CN_TT.geojson", {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, NewPointStyle);
+        },
+        onEachFeature:function(feature, layer){
+            layer.bindPopup(customPopup(feature))
+        }
+    }).addTo(map);
 
 
     //adding osm layer
