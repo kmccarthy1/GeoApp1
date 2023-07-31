@@ -7,8 +7,6 @@
     <title>GeoApp1</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
-    <link rel="stylesheet" href="/style.css">
-
     <style>
         body {
                 margin: 0;
@@ -38,36 +36,29 @@
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 <!--bringing in leaflet ajax-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/L.Geoserver.js"></script>
 
 <script>
     //map initialization
     var map = L.map('map', {
-        center: [37.540, -77.43],
-        zoom: 14,     
-        zoomControl: false,
-        dragging: false,
-        touchZoom: false,
-        doubleClickZoom: false,
-        scrollWheelZoom: false,
-        boxZoom: false,
-        keyboard: false,
-        tap: false
+        center: [39.0473, -95.6752],
+        zoom: 5.4,     
+        zoomControl: true,
+        dragging: true,
+        touchZoom: true,
+        doubleClickZoom: true,
+        scrollWheelZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        tap: true
     });
 
- 
 
-
-    map.once('popupclose', function(e){   
-        L.control.zoom().addTo(map);
-        map.dragging.enable();
-        map.touchZoom.enable();
-        map.doubleClickZoom.enable();
-        map.scrollWheelZoom.enable();
-        map.boxZoom.enable();
-        map.keyboard.enable();
-        if (map.tap) map.tap.enable();
-    });
-
+    var wmsLayer = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
+            layers: "FirstWorkspace:Most Improved Cities"
+        });
+        wmsLayer.addTo(map);
 
 
     //adding osm layer
@@ -75,13 +66,13 @@
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         });
-        //osm.addTo(map);
+        osm.addTo(map);
     //adding dark layer
         var dark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=7f6bc554-f1ae-4503-ab0d-1f2f4b13cf77', {
             maxZoom: 20,
             attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
         });
-        dark.addTo(map);
+        // dark.addTo(map);
     //adding cartography layer
         var carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
