@@ -35,7 +35,7 @@
     <div class="leaflet-control coordinate" ></div>
         <div id="sidebar">
         <div id="tophalf" style="outline: 3px; outline-color: gray; outline-style: solid; padding: 8px; border-radius: 7px;" >
-            <h1>Alt-Transportation Most Improved Cities</h1>
+            <h1 style="text-decoration: underline;">Alt-Transportation Most Improved Cities</h1>
             <h2>A map of the US Top Ten Cities where ridership has grown the most in public transit, walking, and biking</h2>
             <div style = "">
                 <img style="display: block; margin-left: auto; margin-right: auto;" src="/data/CN_pic.jpeg" alt="City Nerd Youtube Profile Photo" href="https://www.youtube.com/@CityNerd/videos">
@@ -84,10 +84,10 @@
     });
 //creating custom popups
     function customPopup(feature){
-       return `<div> <h2 class="popupTitle"></b>${feature.properties.CityName} (Rank #${feature.properties.id})</h2> 
+       return `<div> <h2 style="text-decoration: underline;" class="popupTitle"></b>${feature.properties.CityName} (Rank #${feature.properties.id})</h2> 
                 <p class="popupType"><b>Net Transit Change: </b>${feature.properties.Transit}</p>
                 <p class="popupSubType"><b>Net Walking Change: </b>${feature.properties.Walk}</p>
-                <p class="popupSubType"><b>New Biking Change: </b>${feature.properties.Bike}</p>
+                <p class="popupSubType"><b>Net Biking Change: </b>${feature.properties.Bike}</p>
                </div>`;
     }
 //defining custom style for point data
