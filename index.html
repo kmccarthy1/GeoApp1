@@ -45,6 +45,10 @@
         <div id="bottomhalf" style="background-color: lightgreen;">
 
         </div>
+        <div id="sidebarRight">
+            <div id="chartContainer" class="chart-container"></div>
+                <canvas id="chartCanvas"></canvas>
+        </div>
     </div>
 </body>
 
@@ -59,11 +63,13 @@
 <script src="/markerCluster/dist/leaflet.markercluster.js" ></script>
 <script src="/markerCluster/dist/leaflet.markercluster-src.js" ></script>
 <script src="/mapFunction/defExtent/leaflet.defaultextent.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
 
 <script>
     //map initialization
     var map = L.map('map', {
-        center: [39.3508, -101.7102],
+        center: [39.7392, -104.9903],
         zoom: 5.4,     
         zoomControl: true,
         dragging: true,
@@ -99,9 +105,20 @@
         position: 'left',
         autoPan: true
     });
+    //adding and displaying sidebar
     map.addControl(sidebar);
     sidebar.show();
     var visible = sidebar.isVisible();
+    //creating and displaying right sidebar
+  var sidebarRight = L.control.sidebar('sidebarRight', {
+        closeButton: false,
+        position: 'right',
+    });
+    map.addControl(sidebarRight)
+    sidebarRight.show();
+    var visibleRight = sidebarRight.isVisible();
+
+
 
     //adding data from Geoserver
         // var wmsLayer = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
@@ -152,5 +169,103 @@
         });
         //carto.addTo(map);
 
+    // Create a new dynamic chart
+    const initialChartData = {
+        datasets: [
+            {
+                label: "Top Ten Most Improved Cities",
+                data: [] // Data will be updated dynamically below
+            }
+        ]
+    };
 
-    </script>
+    const chartOptions = {
+
+        scales: {
+          x: {
+            type: 'category',
+            title: {
+              display: true,
+              text: "Cities"
+            },
+            ticks: {
+              autoSkip: false,
+              maxRotation: 45
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: "Net Change"
+            },
+            beginAtZero: true,
+            max: 10,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        },
+        maintainAspectRatio: false, // Turn off animations during chart data updates
+        animation: false,
+        onHover: handleChartHover
+    };
+    
+    const chart = new Chart("chartCanvas", {
+        type: "bar",
+        data: initialChartData,
+        options: chartOptions
+    });
+
+    map.on("move end", updateChart); //Show in the chart only the features in the map's current extent
+    TopTenCities.on("load", updateChart);
+
+    function updateChart() {
+ // reformat the features' attributes of interest into
+        // the data array format required by the Chart.js scatterplot
+        const visibleFeatures = [];
+        TopTenCities.eachLayer(function (layer) {
+            if (map.getBounds().contains(layer.getLatLng())) {
+                visibleFeatures.push(layer);
+                } 
+        });
+
+        // Reformat the attributes of interest into the data array format required by the Chart.js bar chart
+        const chartDataArray = visibleFeatures.map(function (layer) {
+        return {
+            x: layer.feature.properties.CityName,
+            y: layer.feature.properties.Transit,
+        };
+        });
+        // assign the new scatterPlotDataArray to the chart's data property
+        chart.data.datasets[0].data = chartDataArray;
+
+        chart.update();
+    }
+
+    function handleChartHover(event, elements, chart) {
+        if (!elements.length) {
+          TopTenCities.eachLayer(function (e) {
+            e.setOpacity(1);
+            e.setZIndexOffset(0);
+          });
+
+          return;
+        }
+
+        const hoverFeatureIds = elements.map(function (datum) {
+          return chart.data.datasets[datum.datasetIndex].data[datum.index].featureId;
+        });
+
+        // TopTenCities.eachLayer(function (layer) {
+        //     if (visibleFeatures.includes(layer)) {
+        //         layer.setOpacity(1);
+        //         layer.setZIndexOffset(10000);
+        //     } else {
+        //         layer.setOpacity(0.1);
+        //         layer.setZIndexOffset(0);
+        //     }
+        // });
+      }
+
+
+</script>

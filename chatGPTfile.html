@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- ... (the same as your previous code) ... -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <!-- ... (the same as your previous code) ... -->
+    <script src="/markerCluster/dist/leaflet.markercluster-src.js" ></script>
+
+    <!-- Load Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+    <style>
+      /* ... (the same as your previous code) ... */
+    </style>
+</head>
+<body>
+    <div class="custom-popup" id="map"></div>
+    <div class="leaflet-control coordinate" ></div>
+    <div id="sidebar">
+        <!-- ... (the same as your previous code) ... -->
+    </div>
+    <!-- Add a div to hold the dynamic chart -->
+    <div id="chartContainer" class="chart-container"></div>
+</body>
+
+<script>
+    // ... (the same as your previous code) ...
+
+    // Create a new dynamic chart
+    const initialChartData = {
+        datasets: [
+            {
+                label: "Top Ten Most Improved Cities",
+                data: [] // Data will be updated dynamically below
+            }
+        ]
+    };
+
+    const chartOptions = {
+        // ... (the same as your previous code) ...
+    };
+
+    const chart = new Chart("chartCanvas", {
+        type: "scatter",
+        data: initialChartData,
+        options: chartOptions
+    });
+
+    map.on("zoom move", updateChart); //Show in the chart only the features in the map's current extent
+    treesFeatureLayer.on("load", updateChart);
+
+    // Function to update the chart based on the GeoJSON data
+    function updateChart() {
+ // reformat the features' attributes of interest into
+        // the data array format required by the Chart.js scatterplot
+        const scatterPlotDataArray = [];
+
+        treesFeatureLayer.eachActiveFeature(function (e) {
+          scatterPlotDataArray.push({
+            x: e.feature.properties.DIAMETER,
+            y: e.feature.properties.HEIGHT,
+            featureId: e.feature.id
+          });
+        });
+
+        // assign the new scatterPlotDataArray to the chart's data property
+        chart.data.datasets[0].data = scatterPlotDataArray;
+
+        chart.update();
+      }
+
+      function handleChartHover(event, elements, chart) {
+        if (!elements.length) {
+          treesFeatureLayer.eachFeature(function (e) {
+            e.setOpacity(1);
+            e.setZIndexOffset(0);
+          });
+
+          return;
+        }
+
+        const hoverFeatureIds = elements.map(function (datum) {
+          return chart.data.datasets[datum.datasetIndex].data[datum.index].featureId;
+        });
+
+        treesFeatureLayer.eachFeature(function (e, idx) {
+          if (hoverFeatureIds.indexOf(e.feature.id) > -1) {
+            e.setOpacity(1);
+            e.setZIndexOffset(10000);
+          } else {
+            e.setOpacity(0.1);
+          }
+        });
+      }
+</script>
+
+</html>
