@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/sidebar/L.Control.Sidebar.css" />
     <link rel="stylesheet" href="/markerCluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="/markerCluster/dist/MarkerCluster.Default.css" />
-
+    <link rel="stylesheet" href="/mapFunction/defExtent/leaflet.defaultextent.css">
 
     <style>
         body {
@@ -53,7 +53,7 @@
 <script src="/sidebar/L.Control.Sidebar.js" ></script>
 <script src="/markerCluster/dist/leaflet.markercluster.js" ></script>
 <script src="/markerCluster/dist/leaflet.markercluster-src.js" ></script>
-
+<script src="/mapFunction/defExtent/leaflet.defaultextent.js"></script>
 
 <script>
     //map initialization
@@ -69,6 +69,7 @@
         keyboard: true,
         tap: true,
         maxZoom: 18,
+        defaultExtentControl: true
     });
 //creating custom popups
     function customPopup(feature){
@@ -105,7 +106,8 @@
     //adding flat file data
     // var TopTenCities = new L.geoJson.ajax("/data/CN_TT.geojson");
             // TopTenCities.addTo(map);
-var markers = L.markerClusterGroup({
+
+    var markers = L.markerClusterGroup({
         spiderfyOnMaxZoom: true,
     });
 
@@ -119,9 +121,6 @@ var markers = L.markerClusterGroup({
             layer.bindPopup(customPopup(feature))
         }
     })
-
-
-    
     TopTenCities.on('data:loaded', function () {
         markers.addLayer(TopTenCities);
     });
@@ -133,13 +132,13 @@ var markers = L.markerClusterGroup({
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         });
-        osm.addTo(map);
+        // osm.addTo(map);
     //adding dark layer
         var dark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=7f6bc554-f1ae-4503-ab0d-1f2f4b13cf77', {
             maxZoom: 20,
             attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
         });
-        // dark.addTo(map);
+         dark.addTo(map);
     //adding cartography layer
         var carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
