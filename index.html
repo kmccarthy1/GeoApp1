@@ -7,6 +7,9 @@
     <title>Top Ten Most Improved Cities</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <link rel="stylesheet" href="/sidebar/L.Control.Sidebar.css" />
+    <link rel="stylesheet" href="/markerCluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="/markerCluster/dist/MarkerCluster.Default.css" />
+
 
     <style>
         body {
@@ -48,6 +51,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/L.Geoserver.js"></script>
 <script src="/sidebar/L.Control.Sidebar.js" ></script>
+<script src="/markerCluster/dist/leaflet.markercluster.js" ></script>
+<script src="/markerCluster/dist/leaflet.markercluster-src.js" ></script>
 
 
 <script>
@@ -62,11 +67,12 @@
         scrollWheelZoom: true,
         boxZoom: true,
         keyboard: true,
-        tap: true
+        tap: true,
+        maxZoom: 18,
     });
 //creating custom popups
     function customPopup(feature){
-       return `<div> <h2 class="popupTitle"></b>${feature.properties.CityName}</h2> 
+       return `<div> <h2 class="popupTitle"></b>${feature.properties.CityName} (Rank #${feature.properties.id})</h2> 
                 <p class="popupType"><b>Net Transit Change: </b>${feature.properties.Transit}</p>
                 <p class="popupSubType"><b>Net Walking Change: </b>${feature.properties.Walk}</p>
                 <p class="popupSubType"><b>New Biking Change: </b>${feature.properties.Bike}</p>
@@ -80,26 +86,31 @@
     weight: 0.5,
     opacity: 1,
     fillOpacity: 0.8
-};
-//creating initial sidebar
-var sidebar = L.control.sidebar('sidebar', {
-    closeButton: false,
-    position: 'left',
-    autoPan: true
-});
-map.addControl(sidebar);
-sidebar.show();
-var visible = sidebar.isVisible();
-//adding data from Geoserver
-    // var wmsLayer = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
-    //         layers: "FirstWorkspace:Most Improved Cities"
-    //     });
-    //     wmsLayer.addTo(map);
-//adding flat file data
-// var TopTenCities = new L.geoJson.ajax("/data/CN_TT.geojson");
-        // TopTenCities.addTo(map);
+    };
+    //creating initial sidebar
+    var sidebar = L.control.sidebar('sidebar', {
+        closeButton: false,
+        position: 'left',
+        autoPan: true
+    });
+    map.addControl(sidebar);
+    sidebar.show();
+    var visible = sidebar.isVisible();
 
-//adding city data from geojson and adding custom style
+    //adding data from Geoserver
+        // var wmsLayer = L.Geoserver.wms("http://localhost:8080/geoserver/wms", {
+        //         layers: "FirstWorkspace:Most Improved Cities"
+        //     });
+        //     wmsLayer.addTo(map);
+    //adding flat file data
+    // var TopTenCities = new L.geoJson.ajax("/data/CN_TT.geojson");
+            // TopTenCities.addTo(map);
+var markers = L.markerClusterGroup({
+        spiderfyOnMaxZoom: true,
+    });
+
+
+    //adding city data from geojson and adding custom style
     var TopTenCities = new L.geoJson.ajax("/data/CN_TT.geojson", {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, NewPointStyle);
@@ -107,7 +118,14 @@ var visible = sidebar.isVisible();
         onEachFeature:function(feature, layer){
             layer.bindPopup(customPopup(feature))
         }
-    }).addTo(map);
+    })
+
+
+    
+    TopTenCities.on('data:loaded', function () {
+        markers.addLayer(TopTenCities);
+    });
+    map.addLayer(markers);
 
 
     //adding osm layer
@@ -131,11 +149,4 @@ var visible = sidebar.isVisible();
         //carto.addTo(map);
 
 
-
-
-
     </script>
-
-
-
-
