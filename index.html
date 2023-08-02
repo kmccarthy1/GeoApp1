@@ -96,8 +96,8 @@
     fillColor: "#03d3fc",
     color: "#000000",
     weight: 0.5,
-    opacity: 1,
-    fillOpacity: 0.8
+    // opacity: 1,
+    fillOpacity: 1
     };
     //creating initial sidebar
     var sidebar = L.control.sidebar('sidebar', {
@@ -172,41 +172,52 @@
     // Create a new dynamic chart
     const initialChartData = {
         datasets: [
+        {
+                label: "Bike Net Change",
+                data: [], // Data will be updated dynamically below
+                backgroundColor: "blue",
+            },
             {
-                label: "Top Ten Most Improved Cities",
-                data: [] // Data will be updated dynamically below
-            }
+                label: "Walk Net Change",
+                data: [], // Data will be updated dynamically below
+                backgroundColor: "green",
+            },
+            {
+                label: "Transit Net Change",
+                data: [], // Data will be updated dynamically below
+                backgroundColor: "red",
+            },
         ]
     };
 
     const chartOptions = {
 
         scales: {
-          x: {
-            type: 'category',
-            title: {
-              display: true,
-              text: "Cities"
+            x: {
+                type: "category",
+                title: {
+                    display: true,
+                    text: "Cities",
+                },
+                ticks: {
+                    autoSkip: false,
+                    maxRotation: 45,
+                },
             },
-            ticks: {
-              autoSkip: false,
-              maxRotation: 45
-            }
-          },
-          y: {
-            title: {
-              display: true,
-              text: "Net Change"
+            y: {
+                title: {
+                    display: true,
+                    text: "Net Change",
+                },
+                beginAtZero: true,
+                max: 10,
+                ticks: {
+                    stepSize: 1,
+                },
             },
-            beginAtZero: true,
-            max: 10,
-            ticks: {
-              stepSize: 1
-            }
-          }
         },
-        maintainAspectRatio: false, // Turn off animations during chart data updates
-        animation: false,
+        maintainAspectRatio: false, // Turn off animations during chart data updates EXPERIMENT
+        animation: true,
         onHover: handleChartHover
     };
     
@@ -229,23 +240,54 @@
                 } 
         });
 
-        // Reformat the attributes of interest into the data array format required by the Chart.js bar chart
-        const chartDataArray = visibleFeatures.map(function (layer) {
-        return {
-            x: layer.feature.properties.CityName,
-            y: layer.feature.properties.Transit,
-        };
+
+        const citiesData = {};
+        visibleFeatures.forEach((layer) => {
+            const city = layer.feature.properties.CityName;
+
+            if (!citiesData[city]) {
+                citiesData[city] = {
+                    Bike: layer.feature.properties.Bike,
+                    Walk: layer.feature.properties.Walk,
+                    Transit: layer.feature.properties.Transit,
+                };
+            } else {
+                citiesData[city].Bike += layer.feature.properties.Bike;
+                citiesData[city].Walk += layer.feature.properties.Walk;
+                citiesData[city].Transit += layer.feature.properties.Transit;
+            }
         });
-        // assign the new scatterPlotDataArray to the chart's data property
-        chart.data.datasets[0].data = chartDataArray;
+
+
+        // chart.data.labels = chartDataArray.map((data) => data.x);
+        //     chart.data.datasets.forEach((dataset) => {
+        //         dataset.data = chartDataArray
+        //             .filter((data) => data.type === dataset.label)
+        //             .map((data) => data.y);
+        // });
+
+        const chartDataArray = Object.keys(citiesData).map((city) => {
+            return {
+                x: city,
+                yBike: citiesData[city].Bike,
+                yWalk: citiesData[city].Walk,
+                yTransit: citiesData[city].Transit,
+            };
+        });
+
+        chart.data.labels = chartDataArray.map((data) => data.x);
+        chart.data.datasets[0].data = chartDataArray.map((data) => data.yBike);
+        chart.data.datasets[1].data = chartDataArray.map((data) => data.yWalk);
+        chart.data.datasets[2].data = chartDataArray.map((data) => data.yTransit);
 
         chart.update();
-    }
+
+        }
 
     function handleChartHover(event, elements, chart) {
         if (!elements.length) {
           TopTenCities.eachLayer(function (e) {
-            e.setOpacity(1);
+            // e.setOpacity(1);
             e.setZIndexOffset(0);
           });
 
