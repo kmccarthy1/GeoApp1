@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/markerCluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="/markerCluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="/mapFunction/defExtent/leaflet.defaultextent.css">
+    <link rel="stylesheet" href="/css/style.css">
 
     <style>
         body {
@@ -35,21 +36,27 @@
     <div class="leaflet-control coordinate" ></div>
         <div id="sidebar">
         <div id="tophalf" style="outline: 3px; outline-color: gray; outline-style: solid; padding: 8px; border-radius: 7px;" >
-            <h1 style="text-decoration: underline;">Alt-Transportation Most Improved Cities</h1>
-            <h2>A map of the US Top Ten Cities where ridership has grown the most in public transit, walking, and biking</h2>
+            <h1 style="text-decoration: underline; text-align: center;">Alt-Transportation Most Improved Cities</h1>
+            <p style="text-align: center; font-size: large;" >A map of the US Top Ten Cities that have moved the most people away from driving and into <span style="color: blue;"> biking</span>, <span style="color: green;">walking</span>, and <span style="color: red;" >public transit</span></p>
             <div style = "">
-                <img style="display: block; margin-left: auto; margin-right: auto;" src="/data/CN_pic.jpeg" alt="City Nerd Youtube Profile Photo" href="https://www.youtube.com/@CityNerd/videos">
+                <a href="https://www.youtube.com/@CityNerd/videos" target="_blank">
+                    <img style="display: block; margin-left: auto; margin-right: auto;" src="/data/CN_pic.jpeg" alt="City Nerd Youtube Profile Photo">
+                </a>            
             </div>
-            <p>https://youtu.be/-Mh1UctlSOg</p>
+            <div style="display: block; margin-left: auto; margin-right: auto; padding: 10px 5px;">
+                <button class="button-74" onclick="redirectToCNVideo()">Reference Video</button>
+            </div>        
         </div>
-        <div id="bottomhalf" style="background-color: lightgreen;">
+        <div id="bottomhalf" style="outline: 3px; outline-color: lightgreen; outline-style: solid; padding: 8px; border-radius: 7px; height: 50%; margin-top: 20px;">
 
         </div>
-        <div id="sidebarRight">
+        <!-- <footer class="footer"> Test Footer</footer> -->
+       
+    </div> 
+    <div id="sidebarRight">
             <div id="chartContainer" class="chart-container"></div>
                 <canvas id="chartCanvas"></canvas>
         </div>
-    </div>
 </body>
 
 
@@ -82,6 +89,10 @@
         maxZoom: 15,
         defaultExtentControl: true
     });
+
+    function redirectToCNVideo() {
+            window.location.href = "http://www.youtube.com/watch?v=-Mh1UctlSOg&ab_channel=CityNerd";
+        }
 //creating custom popups
     function customPopup(feature){
        return `<div> <h2 style="text-decoration: underline;" class="popupTitle"></b>${feature.properties.CityName} (Rank #${feature.properties.id})</h2> 
@@ -216,7 +227,7 @@
                 },
             },
         },
-        maintainAspectRatio: false, // Turn off animations during chart data updates EXPERIMENT
+        maintainAspectRatio: false, // Turn off animations during chart data updates
         animation: true,
         onHover: handleChartHover
     };
