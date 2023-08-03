@@ -44,11 +44,18 @@
                 </a>            
             </div>
             <div style="display: block; margin-left: auto; margin-right: auto; padding: 10px 5px;">
-                <button class="button-74" onclick="redirectToCNVideo()">Reference Video</button>
+                <button class="button-74" onclick="redirectToCNVideo()" >Reference Video</button>
             </div>        
         </div>
         <div id="bottomhalf" style="outline: 3px; outline-color: lightgreen; outline-style: solid; padding: 8px; border-radius: 7px; height: 50%; margin-top: 20px;">
-
+            <div class="intro">
+                <p style="text-align:center;">This map is a visualization of CityNerd's Video "On the Right Track: The 10 Most Improved Cities In the U.S. for Transit, Walking, and Biking"
+                    <br><br><span>Data Used For Initial Analysis: ACS 5 Year Datasets (2006-2010 vs 2015-2019)</span>
+                    <br><br><ul>Analysis: </ul>
+                                 <li>Comparison of <a href="https://data.census.gov/table?q=commute&tid=ACSST5Y2021.S0801" target="_blank">ACS 5 Year</a> Dataset Averages 2006-2010 vs 2015-2019</li>
+                                 <li>Only considered cities with >200k population</li>
+                </p>
+            </div>
         </div>
         <!-- <footer class="footer"> Test Footer</footer> -->
        
@@ -90,10 +97,24 @@
         defaultExtentControl: true
     });
 
+    //video redirect
     function redirectToCNVideo() {
-            window.location.href = "http://www.youtube.com/watch?v=-Mh1UctlSOg&ab_channel=CityNerd";
-        }
-//creating custom popups
+    window.open("http://www.youtube.com/watch?v=-Mh1UctlSOg&ab_channel=CityNerd", "_blank");
+
+//controls for default extent extension -- does not work like this, need to look into github documentation on this
+// L.Control.DefaultExtent = L.Control.extend({
+//     options: {
+//         position: 'topleft',
+//         text: 'Default Extent',
+//         title: 'Reset to Default Extent',
+//         defaultExtent: {
+//             center: [39.7392, -104.9903], // <--- Ensure this matches your initial extent
+//             zoom: 5.4, // <--- Ensure this matches your initial extent
+//         },
+//     },
+// });
+
+}//creating custom popups
     function customPopup(feature){
        return `<div> <h2 style="text-decoration: underline;" class="popupTitle"></b>${feature.properties.CityName} (Rank #${feature.properties.id})</h2> 
                 <p class="popupType"><b>Net Transit Change: </b>${feature.properties.Transit}</p>
