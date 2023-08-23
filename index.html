@@ -47,13 +47,14 @@
                 <button class="button-74" onclick="redirectToCNVideo()" >Reference Video</button>
             </div>        
         </div>
-        <div id="bottomhalf" style="outline: 3px; outline-color: lightgreen; outline-style: solid; padding: 8px; border-radius: 7px; height: 50%; margin-top: 20px;">
+        <div id="bottomhalf" style="outline: 3px; outline-color: lightgreen; outline-style: solid; padding: 8px; border-radius: 7px; height: 42%; margin-top: 20px;">
             <div class="intro">
-                <p style="text-align:center;">This map is a visualization of CityNerd's Video "On the Right Track: The 10 Most Improved Cities In the U.S. for Transit, Walking, and Biking"
-                    <br><br><span>Data Used For Initial Analysis: ACS 5 Year Datasets (2006-2010 vs 2015-2019)</span>
-                    <br><br><ul>Analysis: </ul>
-                        <li>Only considered cities with >200k population</li>
-                        <li>Comparison of <a href="https://data.census.gov/table?q=commute&tid=ACSST5Y2021.S0801" target="_blank">ACS 5 Year</a> Dataset Averages 2006-2010 vs 2015-2019</li>
+                <p style="text-align:center;">This map is a visualization of CityNerd's video "On the Right Track: The 10 Most Improved Cities In the U.S. for Transit, Walking, and Biking"
+                    <br><br><span style="text-align:center; text-decoration: underline; font-weight: bold;">Data Used For Initial Analysis:<br> ACS 5 Year Datasets (2006-2010 vs 2015-2019)</span>
+                    <br><br><ul style="text-align:center; text-decoration: underline; font-weight: bold;">Analysis: </ul>
+                        <li style="text-align:center;">Only considered cities with >200k population</li>
+                        <li style="text-align:center;">Only considering city proper NOT metro area</li>
+                        <li style="text-align:center;">Comparison of <a href="https://data.census.gov/table?q=commute&tid=ACSST5Y2021.S0801" target="_blank">ACS 5 Year</a> Dataset Averages 2006-2010 vs 2015-2019</li>
                 </p>
             </div>
         </div>
@@ -83,8 +84,8 @@
 <script>
     //map initialization
     var map = L.map('map', {
-        center: [39.7392, -104.9903],
-        zoom: 5.4,     
+        center: [39.7392, -114.9903],
+        zoom: 4,     
         zoomControl: true,
         dragging: true,
         touchZoom: true,
@@ -102,25 +103,25 @@
     window.open("http://www.youtube.com/watch?v=-Mh1UctlSOg&ab_channel=CityNerd", "_blank");
 
 //controls for default extent extension -- does not work like this, need to look into github documentation on this
-// L.Control.DefaultExtent = L.Control.extend({
-//     options: {
-//         position: 'topleft',
-//         text: 'Default Extent',
-//         title: 'Reset to Default Extent',
-//         defaultExtent: {
-//             center: [39.7392, -104.9903], // <--- Ensure this matches your initial extent
-//             zoom: 5.4, // <--- Ensure this matches your initial extent
-//         },
-//     },
-// });
+L.Control.DefaultExtent = L.Control.extend({
+    options: {
+        position: 'topleft',
+        text: 'Default Extent',
+        title: 'Reset to Default Extent',
+        defaultExtent: {
+            center: [39.7392, -114.9903], // <--- Ensure this matches your initial extent
+            zoom: 4, // <--- Ensure this matches your initial extent
+        },
+    },
+});
 
-}//creating custom popups
-    function customPopup(feature){
-       return `<div> <h2 style="text-decoration: underline;" class="popupTitle"></b>${feature.properties.CityName} (Rank #${feature.properties.id})</h2> 
-                <p class="popupType"><b>Net Transit Change: </b>${feature.properties.Transit}</p>
-                <p class="popupSubType"><b>Net Walking Change: </b>${feature.properties.Walk}</p>
-                <p class="popupSubType"><b>Net Biking Change: </b>${feature.properties.Bike}</p>
-               </div>`;
+    }//creating custom popups
+        function customPopup(feature){
+        return `<div> <h2 style="text-decoration: underline;" class="popupTitle"></b>${feature.properties.CityName} (Rank #${feature.properties.id})</h2> 
+                    <p class="popupType"><b>Net Transit Change: </b>${feature.properties.Transit}</p>
+                    <p class="popupSubType"><b>Net Walking Change: </b>${feature.properties.Walk}</p>
+                    <p class="popupSubType"><b>Net Biking Change: </b>${feature.properties.Bike}</p>
+                </div>`;
     }
 //defining custom style for point data
     var NewPointStyle = {
@@ -137,12 +138,14 @@
         position: 'left',
         autoPan: true
     });
+
     //adding and displaying sidebar
     map.addControl(sidebar);
     sidebar.show();
     var visible = sidebar.isVisible();
+
     //creating and displaying right sidebar
-  var sidebarRight = L.control.sidebar('sidebarRight', {
+    var sidebarRight = L.control.sidebar('sidebarRight', {
         closeButton: false,
         position: 'right',
     });
@@ -319,7 +322,6 @@
     function handleChartHover(event, elements, chart) {
         if (!elements.length) {
           TopTenCities.eachLayer(function (e) {
-            // e.setOpacity(1);
             e.setZIndexOffset(0);
           });
 
